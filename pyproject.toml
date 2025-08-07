@@ -1,0 +1,25 @@
+[project]
+name = "quizquestionizer"
+version = "1.0.0"
+description = "Take screenshots from a quiz book with your webcam and turn them into OBS-ready HTML"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [
+    { name = "Henrik Heimbuerger", email = "henrik@heimbuerger.de" }
+]
+
+dependencies = [
+    "fluent-llm",
+    "numpy>=2.3.2",
+    "opencv-python>=4.11.0.86",
+    "python-dotenv>=1.1.1",
+    "flask>=3.0.0",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.30.0",
+]
+
+[tool.uv.sources]

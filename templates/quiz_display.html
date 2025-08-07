@@ -1,0 +1,71 @@
+{% if quiz_data %}
+<div class="quiz-display">
+    <div class="header">
+        <div>Kapitel {{ quiz_data.chapter_number }}</div>
+        <div>Frage {{ quiz_data.question_number }}</div>
+    </div>
+    
+    <div class="question">
+        {{ quiz_data.question }}
+    </div>
+    
+    <div class="answers">
+        {% for letter, answer in quiz_data.answers.items() %}
+        <div class="answer-option">
+            <div class="answer-letter">{{ letter }}</div>
+            <div class="answer-text">{{ answer }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .quiz-display {
+        margin: 0 0;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        color: #7f8c8d;
+        margin-bottom: 1em;
+        font-weight: bold;
+    }
+    .question {
+        font-size: 1.1em;
+        margin: 0 0;
+        white-space: pre-line;
+        font-weight: 500;
+    }
+    .answers {
+        margin: 1.2em 0;
+    }
+    .answer-option {
+        display: flex;
+        margin: 0.8em 0;
+        align-items: flex-start;
+        padding: 0.5em;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    .answer-option:hover {
+        background-color: #f8f9fa;
+    }
+    .answer-letter {
+        font-weight: bold;
+        background-color: #f0f0f0;
+        color: #2c3e50;
+        width: 1.8em;
+        height: 1.8em;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1em;
+        flex-shrink: 0;
+    }
+    .answer-text {
+        flex-grow: 1;
+        padding-top: 0.2em;
+    }
+</style>
+{% endif %}

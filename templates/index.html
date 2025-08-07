@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if quiz_data %}
+        <div class="container">
+            <div id="quiz-container">
+                {% include "quiz_display.html" %}
+            </div>
+        </div>
+    {% else %}
+        <!--<p>Keine Quizfrage vorhanden.</p>-->
+    {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const eventSource = new EventSource('/events');
+    
+    eventSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        let quizContainer = document.getElementById('quiz-container');
+        
+        if (data.type === 'reset') {
+            if (quizContainer) {
+                quizContainer.innerHTML = '';
+            }
+            // Remove the container div if it exists
+            const containerDiv = document.querySelector('.container');
+            if (containerDiv) {
+                containerDiv.remove();
+            }
+        } else if (data.type === 'update' || data.type === 'initial') {
+            // If container doesn't exist, create it
+            if (!quizContainer) {
+                const containerDiv = document.createElement('div');
+                containerDiv.className = 'container';
+                quizContainer = document.createElement('div');
+                quizContainer.id = 'quiz-container';
+                containerDiv.appendChild(quizContainer);
+                document.body.appendChild(containerDiv);
+            }
+            // The server will send the full HTML for the quiz display
+            quizContainer.innerHTML = data.html || '';
+        }
+    };
+    
+    eventSource.onerror = function() {
+        // Attempt to reconnect if the connection is lost
+        setTimeout(() => {
+            if (eventSource.readyState === EventSource.CLOSED) {
+                // Recreate the connection
+                eventSource.close();
+                const newEventSource = new EventSource('/events');
+                newEventSource.onmessage = eventSource.onmessage;
+                newEventSource.onerror = eventSource.onerror;
+            }
+        }, 5000);
+    };
+    
+    // Clean up SSE connection when page unloads
+    window.addEventListener('beforeunload', () => {
+        if (eventSource) {
+            eventSource.close();
+        }
+    });
+</script>
+{% endblock %}
