@@ -7,6 +7,7 @@ import os
 import numpy as np
 import time
 import threading
+import re
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -73,6 +74,18 @@ def save_quiz_data(data):
     """Save quiz data to JSON file."""
     with open('quiz_data.json', 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+def extract_json_from_markdown(text):
+    """Extract JSON from markdown code blocks or return the text as-is if no code blocks found."""
+    # Look for JSON wrapped in markdown code blocks
+    json_pattern = r'```(?:json)?\s*(\{.*?\})\s*```'
+    match = re.search(json_pattern, text, re.DOTALL)
+    
+    if match:
+        return match.group(1).strip()
+    
+    # If no markdown code blocks found, return the original text
+    return text.strip()
 
 def generate_quiz_html(data):
     """Generate HTML for the quiz question using Flask's application context."""
@@ -262,7 +275,10 @@ def questionize():
             print('Extracting question...')
             response = llm.image(openai_image.tobytes()).request(PROMPT).prompt()
             print(response)
-            response_dict = json.loads(response)
+            
+            # Extract JSON from markdown code blocks if present
+            json_text = extract_json_from_markdown(response)
+            response_dict = json.loads(json_text)
 
             # Store the quiz data
             print('Notifying clients...')
