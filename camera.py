@@ -17,7 +17,6 @@ def video_capture(camera_index=0):
     """
     vc = cv2.VideoCapture(camera_index)
     try:
-        vc.open(0)
         if not vc.isOpened():
             raise RuntimeError(f"Could not open camera with index {camera_index}")
             
