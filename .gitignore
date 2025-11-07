@@ -8,8 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
-/.env
 
 # App-specific files
-/output.log
-/quiz_data.json
+.env
+output.log
+quiz_data.json
+camera_*_test.jpg
+camera_*_snapshot_*.jpg
